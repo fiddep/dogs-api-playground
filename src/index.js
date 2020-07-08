@@ -55,7 +55,12 @@ async function render() {
 async function dogListCell() {
   const dogs = await api.getAll();
   const resolved = await Promise.all(
-    Object.keys(dogs)
+    Object.entries(dogs)
+      .flatMap(([breed, subBreeds]) =>
+        subBreeds.length === 0
+          ? [breed]
+          : subBreeds.map(subBreed => `${breed}/${subBreed}`)
+      )
       .filter(isAlike(state.filter))
       .map(dogCell)
   );
